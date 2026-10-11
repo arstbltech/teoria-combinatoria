@@ -13,6 +13,7 @@ func _initialize() -> void:
 	_probar_dos_ladrillos()
 	_probar_niveles()
 	_probar_preguntas()
+	_probar_mundos_y_premios()
 	print("%d pruebas, %d fallos (%d ms)" % [pruebas, fallos, Time.get_ticks_msec() - inicio])
 	quit(1 if fallos > 0 else 0)
 
@@ -120,3 +121,28 @@ func _probar_preguntas() -> void:
 			_igual(bien, true, "pregunta de %s: %s %s" % [tema, p.texto, p.opciones])
 	var lote := Preguntas.generar_lote(Preguntas.TEMAS, 10, rng)
 	_igual(lote.size(), 10, "lote de 10 preguntas")
+
+
+func _probar_mundos_y_premios() -> void:
+	# Cada nivel pertenece a exactamente un mundo y los requisitos van en aumento.
+	var vistos := {}
+	var requisito_anterior := -1
+	for m in Mundos.cantidad():
+		var mundo := Mundos.obtener(m)
+		_igual(mundo.requiere > requisito_anterior, true, "mundo %d pide más estrellas que el anterior" % (m + 1))
+		requisito_anterior = mundo.requiere
+		for n in mundo.niveles:
+			_igual(vistos.has(n), false, "nivel %d en un solo mundo" % (n + 1))
+			vistos[n] = true
+			_igual(Mundos.de_nivel(n), m, "Mundos.de_nivel(%d)" % n)
+	_igual(vistos.size(), Niveles.cantidad(), "todos los niveles tienen mundo")
+	# La tienda y los logros están bien definidos.
+	for o in Premios.TIENDA:
+		_igual(o.precio > 0 and Premios.objeto(o.id) == o, true, "objeto %s" % o.id)
+	var ids := {}
+	for l in Premios.LOGROS:
+		_igual(ids.has(l.id), false, "logro %s sin repetir" % l.id)
+		ids[l.id] = true
+		_igual(l.meta > 0, true, "meta del logro %s" % l.id)
+	for tema in Preguntas.TEMAS:
+		_igual(Premios.PISTAS.has(tema), true, "pista para el tema %s" % tema)

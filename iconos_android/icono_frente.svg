@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="432" height="432" viewBox="0 0 432 432">
+  <!-- Primer plano del ícono adaptable: sólo los ladrillos, dentro de la zona segura central -->
+  <g transform="translate(88 88) scale(1.0)">
+    <rect x="58" y="128" width="26" height="22" rx="7" fill="#ffd257"/>
+    <rect x="172" y="128" width="26" height="22" rx="7" fill="#ffd257"/>
+    <rect x="44" y="142" width="168" height="66" rx="16" fill="#ffc531"/>
+    <rect x="44" y="190" width="168" height="18" rx="9" fill="#f0a91a"/>
+    <rect x="98" y="62" width="24" height="22" rx="7" fill="#ff6a5f"/>
+    <rect x="134" y="62" width="24" height="22" rx="7" fill="#ff6a5f"/>
+    <rect x="86" y="76" width="84" height="66" rx="16" fill="#ef4136"/>
+    <rect x="86" y="124" width="84" height="18" rx="9" fill="#d3352b"/>
+  </g>
+</svg>

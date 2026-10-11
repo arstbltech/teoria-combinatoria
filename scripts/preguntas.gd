@@ -64,6 +64,7 @@ static func generar(tema: String, rng: RandomNumberGenerator) -> Dictionary:
 		_:
 			q = _burnside(rng)
 	q.tema = NOMBRE_TEMA.get(tema, tema)
+	q.pista = Premios.PISTAS.get(tema, "")
 	return _armar(q, rng)
 
 
@@ -87,6 +88,7 @@ static func _armar(q: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
 		"correcta": opciones.find(correcta),
 		"valor": correcta,
 		"explicacion": q.explicacion,
+		"pista": q.pista,
 	}
 
 
@@ -275,7 +277,7 @@ static func _altura(rng: RandomNumberGenerator) -> Dictionary:
 		"texto": "Una pila de [b]altura exacta %d[/b] se arma con placas (altura 1) y [b]exactamente %d %s[/b] (altura 3). ¿Cuántas pilas distintas hay?" % [n, j, "ladrillos" if j > 1 else "ladrillo"],
 		"correcta": v,
 		"distractores": [Combinatoria.binomial(n, j), Combinatoria.binomial(n - j, j), Combinatoria.binomial(n - 3 * j, j), Combinatoria.pilas(n)],
-		"explicacion": "Con %d de altura 3 quedan %d placas: %d piezas en total. Basta elegir qué posiciones ocupan los ladrillos: C(%d, %d) = %s." % [j, n - 3 * j, n - 2 * j, n - 2 * j, j, _f(v)],
+		"explicacion": "Con %d %s quedan %d placas: %d piezas en total. Basta elegir qué posiciones ocupan los ladrillos: C(%d, %d) = %s." % [j, "ladrillos" if j > 1 else "ladrillo", n - 3 * j, n - 2 * j, n - 2 * j, j, _f(v)],
 	}
 
 

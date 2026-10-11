@@ -1,13 +1,63 @@
 # Ladrillos Combinatorios
 
-Juego educativo hecho en **Godot 4.7** en el que se aprende teoría combinatoria
-armando torres y construcciones con ladrillos tipo LEGO. Funciona en escritorio
-y en el navegador.
+Juego educativo hecho en **Godot 4.7** para aprender la **Unidad III de
+combinatoria** armando torres y construcciones con ladrillos tipo LEGO. Se instala
+en el celular como **APK de Android** y también funciona en el navegador y en la
+computadora.
 
-Cada nivel corresponde a un teorema. El jugador construye configuraciones en 3D y
-el juego cuenta cuántas distintas encontró. El total sale de una fórmula demostrada
-en la pestaña *Teoría* y comprobada por fuerza bruta en la pestaña *Comprobar*.
-Después vienen preguntas de combinatoria generadas al azar.
+## La historia
+
+**Brickópolis** era una ciudad hecha por completo de ladrillos, hasta que llegó el
+**Caos Aleatorio** y revolvió todas sus piezas. El jugador es el **Maestro
+Constructor**: para reconstruir cada zona tiene que descubrir *todas las formas
+distintas* de armar cada estructura, sin repetir ninguna. Ahí entra la combinatoria.
+Recorre tres mundos y, al final, enfrenta al Caos Aleatorio en persona.
+
+## Mundos (ambientes)
+
+Cada mundo es un ambiente 3D distinto, con su cielo, su suelo, su luz y una
+decoración armada con ladrillos. Se desbloquean al reunir estrellas.
+
+| Mundo | Ambiente | Niveles | Se abre con |
+|---|---|---|---|
+| 1. Pradera Bloque | Día, pasto, árboles, casa, flores y nubes de ladrillos | 1 – 3 | — |
+| 2. Dunas Doradas | Desierto, pirámide escalonada, cactus, rocas y sol | 4 – 6 | 2 ★ |
+| 3. Base Lunar | Noche estrellada, cohete, antena, cráteres y la Tierra en el cielo | 7 – 9 | 5 ★ |
+| Jefe final | El Caos Aleatorio: 10 preguntas de todos los temas | — | con la Base Lunar |
+
+## Mecánicas
+
+- **Menú:** mapa de Brickópolis con los mundos, sus niveles, el jefe final, la
+  tienda de premios, la historia y la ayuda.
+- **Construir:** en cada nivel se arman todas las configuraciones distintas posibles.
+  El total sale de un teorema de combinatoria y se comprueba por fuerza bruta.
+- **Vidas:** cada ronda de preguntas empieza con 3 corazones. Cada error cuesta uno y
+  sin vidas se pierde la ronda.
+- **Monedas:**
+
+  | Acción | Monedas |
+  |---|---|
+  | Construcción nueva | 1 |
+  | Completar un reto | 20 |
+  | Respuesta correcta | 5 (10 con racha) |
+  | Ronda perfecta | 15 |
+  | Vencer al jefe | 30 |
+  | Cofre de cada mundo | 50 |
+  | Cada logro | 15 |
+
+- **Bonus:**
+  - Cada nivel esconde una configuración **dorada** que vale +10 monedas.
+  - Una **racha** de 3 aciertos duplica las monedas de las respuestas.
+  - Al completar los retos de un mundo se abre su **cofre**.
+- **Estrellas:** 3 por nivel (completar el reto, acertar ⅔ de las preguntas,
+  acertarlas todas) y 3 por el jefe final. Sirven para desbloquear mundos.
+- **Premios:**
+  - Una **tienda** donde se compran objetos con monedas: *vida extra*, *comodín 50/50*
+    y *pista*.
+  - **12 logros**, entre ellos «Primer ladrillo», «Imparable», «Buscador de oro»,
+    «Orden restaurado» y «Sin un rasguño».
+- **Preguntas de la materia:** se generan con números al azar sobre cada tema de la
+  Unidad III. Las opciones incorrectas imitan errores típicos.
 
 | Nivel | Concepto | Reto | Fórmula |
 |---|---|---|---|
@@ -22,7 +72,55 @@ Después vienen preguntas de combinatoria generadas al azar.
 | 9. Dos ladrillos 2×4 | Lema de Burnside | todas las formas de unir dos 2×4 | (46 + 2)/2 = 24 |
 
 Las demostraciones formales están en [`docs/FUNDAMENTACION.md`](docs/FUNDAMENTACION.md)
-y también dentro del juego, en la pestaña *Teoría* de cada nivel.
+y dentro del juego, en la pestaña *Teoría* de cada nivel.
+
+## Instalar en el celular (Android)
+
+El APK está en `build/android/LadrillosCombinatorios.apk`. Funciona en Android 7.0
+o superior; pesa 77 MB porque incluye versiones para celulares ARM de 32 y 64 bits
+y para emuladores x86_64.
+
+1. Copia el archivo `.apk` al celular (cable USB, Google Drive, WhatsApp, etc.).
+2. Ábrelo desde el administrador de archivos del celular.
+3. Android preguntará si permites instalar apps de esa fuente: actívalo
+   (*Ajustes → Instalar apps desconocidas*) y pulsa **Instalar**.
+4. Aparece como **Ladrillos Combinatorios** en el cajón de aplicaciones.
+
+Con el celular conectado por USB y la depuración USB activada también sirve:
+`adb install build/android/LadrillosCombinatorios.apk`.
+
+### Volver a generar el APK
+
+Hace falta:
+- Godot 4.7 con sus plantillas de exportación.
+- El Android SDK en `~/Android/Sdk` (command-line tools, `build-tools` y
+  `platform-tools`).
+- Java.
+- La llave de firma en `~/.local/share/ladrillos-combinatorios/`
+  (`release.keystore` y `release.keystore.txt`, con el alias y la contraseña).
+
+Con eso:
+
+```bash
+./exportar_apk.sh /ruta/a/godot      # deja el APK en build/android/
+```
+
+La llave de firma no está en el repositorio a propósito. Guárdala: para *actualizar*
+el juego en un celular donde ya está instalado, el nuevo APK debe firmarse con la
+misma llave. Si la pierdes, basta con desinstalar el juego y volver a instalarlo.
+
+Si la creas de nuevo:
+
+```bash
+keytool -genkeypair -keystore ~/.local/share/ladrillos-combinatorios/release.keystore \
+  -alias ladrillos -keyalg RSA -keysize 2048 -validity 10000
+# y guarda en release.keystore.txt las líneas «alias=ladrillos» y «password=…»
+```
+
+Nota para el emulador de Android: usa la GPU de la computadora
+(`emulator -avd … -gpu host`). Con la GPU por software (SwiftShader) los shaders de
+Godot superan un límite de ese emulador y la pantalla queda gris; en celulares
+reales eso no pasa.
 
 ## Abrir y jugar en el escritorio
 
@@ -31,68 +129,37 @@ y también dentro del juego, en la pestaña *Teoría* de cada nivel.
 2. Abre Godot, pulsa **Importar** y elige el archivo `project.godot` de esta carpeta.
 3. Pulsa **F5** (o el botón ▶) para jugar.
 
-El proyecto usa el renderer **Compatibility**, que es el único que funciona en la web.
+El proyecto usa el renderer **Compatibility**, que funciona en la web y en celulares.
 Todo el código está en **GDScript**, porque los proyectos en C# no se pueden exportar a la web.
+
+La interfaz se adapta a la pantalla: en computadora usa dos columnas y en un
+celular en vertical pasa a una sola columna desplazable, con botones del tamaño
+de un dedo y zoom con dos dedos en la vista 3D.
 
 ## Versión web
 
-### Exportar
-
-1. En Godot: **Editor → Administrar plantillas de exportación → Descargar e instalar**
-   (sólo la primera vez).
-2. **Proyecto → Exportar…** El preajuste **Web** ya está configurado, con
-   *Thread Support* desactivado para que no haga falta configurar cabeceras
-   especiales en el servidor.
-3. Pulsa **Exportar proyecto** y guarda en `build/web/index.html`.
-
-Desde la terminal se hace lo mismo con:
-
 ```bash
 godot --headless --path . --export-release "Web" build/web/index.html
-```
-
-La carpeta `build/web/` ya incluye una exportación lista: unos 40 MB, que quedan
-en unos 9 MB cuando el servidor los envía comprimidos.
-
-### Probar en tu computadora
-
-Godot sólo arranca en el navegador desde un **contexto seguro**: HTTPS, o bien
-`http://localhost`. Si abres el juego con `http://0.0.0.0:8000` (el enlace que imprime
-`python3 -m http.server`) o con la IP de la red (`http://192.168.…`), aparece este error:
-
-> The following features required to run Godot projects on the Web are missing:
-> Secure Context - Check web server configuration (use HTTPS)
-
-Además, el juego no abre con doble clic sobre `index.html`. Usa el script incluido:
-
-```bash
-python3 servir.py            # abre http://localhost:8000 en esta computadora
+python3 servir.py            # http://localhost:8000 en esta computadora
 python3 servir.py --https    # para entrar desde el celular u otra PC de la misma red
 ```
 
-Con `--https` el script crea un certificado autofirmado e imprime las direcciones
-`https://<tu IP>:8443`. La primera vez el navegador mostrará una advertencia; elige
-**Avanzado → Aceptar el riesgo y continuar** (o **Continuar al sitio**). Si el otro
-dispositivo no logra conectarse, revisa que el firewall permita el puerto 8443.
+Godot sólo arranca en el navegador desde un **contexto seguro**: HTTPS o
+`http://localhost`. Abrirlo con `http://0.0.0.0:8000` o con la IP de la red da el error
+*«Secure Context - Check web server configuration (use HTTPS)»*. Con `--https` el
+script crea un certificado propio; la primera vez el navegador pide aceptarlo
+(*Avanzado → Aceptar el riesgo y continuar*).
 
-Otra opción es el botón **Ejecutar en el navegador** del editor (ícono de HTML5, arriba
-a la derecha), que también sirve el juego en `localhost`.
-
-### Publicar
-
-itch.io y GitHub Pages ya usan HTTPS, así que ahí no aparece el error del contexto seguro.
-
-- **itch.io:** comprime el *contenido* de `build/web/` en un `.zip` (con `index.html`
-  en la raíz), créalo como proyecto *HTML* y marca *This file will be played in the browser*.
-- **GitHub Pages:** sube el contenido de `build/web/` a una rama o carpeta publicada.
+Para publicarlo, sube el *contenido* de `build/web/` a itch.io (proyecto HTML),
+GitHub Pages o Netlify. Los tres usan HTTPS.
 
 ## Controles
 
 - Botones de color o teclas **1–5**: poner una pieza. **Retroceso**: quitar la última.
-- Nivel 9: **flechas/WASD** mueven el ladrillo, **R** lo gira, **G** muestra su gemela
-  girada 180°, **Enter** registra.
-- Arrastrar sobre la vista 3D gira la cámara; la rueda acerca.
-- Preguntas: clic o teclas **1–4**; **Enter** pasa a la siguiente.
+- Nivel 9: cruceta o **flechas/WASD** para mover el ladrillo, **R** para girarlo,
+  **G** para ver su gemela girada 180°, **Enter** para registrar.
+- Arrastrar sobre la vista 3D gira la cámara; la rueda del ratón o pellizcar acercan.
+- Preguntas: toque, clic o teclas **1–4**; **Enter** pasa a la siguiente.
 
 ## Cómo aplica el juego la combinatoria
 
@@ -112,30 +179,36 @@ itch.io y GitHub Pages ya usan HTTPS, así que ahí no aparece el error del cont
 ## Estructura
 
 ```
-project.godot            configuración (renderer Compatibility, autoload Juego)
-export_presets.cfg       preajuste de exportación Web
-servir.py                sirve build/web por HTTP (localhost) o HTTPS (red local)
-scenes/                  menú, nivel (constructor 3D) y preguntas
-scripts/combinatoria.gd  fórmulas cerradas de los teoremas
-scripts/enumerador.gd    enumeración por fuerza bruta, reglas y formas canónicas
-scripts/niveles.gd       datos de los niveles, teoría y laboratorio
-scripts/preguntas.gd     generador de preguntas
-scripts/vista_ladrillos.gd  escena 3D (ladrillos, studs, cámara)
-scripts/miniatura.gd     dibujos 2D de la galería
-scripts/estilo.gd        colores y tema visual
-scripts/juego.gd         progreso guardado y navegación
-tests/                   pruebas automáticas
-docs/FUNDAMENTACION.md   demostraciones formales
-fonts/                   DejaVu Sans (incluye los símbolos matemáticos para la web)
+project.godot              configuración (renderer Compatibility, autoload Juego)
+export_presets.cfg         preajustes de exportación Web y Android
+exportar_apk.sh            genera el APK firmado
+servir.py                  sirve build/web por HTTP (localhost) o HTTPS (red local)
+scenes/                    menú (mapa), nivel (constructor 3D), preguntas y premios
+scripts/juego.gd           progreso, monedas, objetos, logros, avisos y navegación
+scripts/mundos.gd          la historia y los tres mundos
+scripts/premios.gd         economía, tienda, logros y pistas
+scripts/vista_ladrillos.gd escena 3D: ambientes, ladrillos, studs y cámara
+scripts/combinatoria.gd    fórmulas cerradas de los teoremas
+scripts/enumerador.gd      enumeración por fuerza bruta, reglas y formas canónicas
+scripts/niveles.gd         datos de los niveles, teoría y laboratorio
+scripts/preguntas.gd       generador de preguntas
+scripts/estilo.gd          colores, tipografía y tema visual
+scripts/icono.gd           íconos vectoriales (moneda, corazón, trofeo…)
+scripts/miniatura.gd       dibujos 2D de la galería
+iconos_android/            íconos del lanzador de Android
+tests/                     pruebas automáticas
+docs/FUNDAMENTACION.md     demostraciones formales
+fonts/                     Inter (texto), Nunito (títulos) y DejaVu Sans (símbolos matemáticos)
 ```
 
 ## Pruebas
 
 ```bash
-# Cada teorema contra la fuerza bruta, los niveles y el generador de preguntas (3487 pruebas)
+# Teoremas contra fuerza bruta, niveles, preguntas, mundos y premios (3545 pruebas)
 godot --headless --path . -s res://tests/pruebas.gd
 
-# Recorre todas las pantallas del juego simulando a un jugador
+# Recorre el juego como un jugador: historia, los 9 niveles, monedas y logros,
+# compra en la tienda, comodines, una ronda perdida por falta de vidas y el jefe final
 godot --headless --path . -- --prueba-humo
 ```
 
@@ -143,6 +216,7 @@ La prueba de humo usa un archivo de progreso aparte y no toca el del jugador.
 
 ## Créditos
 
-- Fuente: [DejaVu Sans](https://dejavu-fonts.github.io/), con licencia libre (ver `fonts/LICENSE-DejaVu.txt`).
+- Fuentes: [Inter](https://rsms.me/inter/) y [Nunito](https://github.com/googlefonts/nunito) (SIL Open Font License) y
+  [DejaVu Sans](https://dejavu-fonts.github.io/) (licencia libre). Ver los archivos `fonts/LICENSE-*.txt`.
 - Dato histórico del nivel 9: S. Eilers, *The LEGO counting problem*, American Mathematical Monthly (2016).
 - LEGO® es una marca de LEGO Group, que no patrocina ni respalda este proyecto educativo.

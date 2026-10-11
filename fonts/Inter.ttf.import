@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://ey38w8igndhm"
-path="res://.godot/imported/DejaVuSans-Oblique.ttf-ff74fd638565b1fb3e000ad516e0ac50.fontdata"
+uid="uid://brv484af3bq5s"
+path="res://.godot/imported/Inter.ttf-71b212663852a96aaf75183f12ecf9e4.fontdata"
 
 [deps]
 
-source_file="res://fonts/DejaVuSans-Oblique.ttf"
-dest_files=["res://.godot/imported/DejaVuSans-Oblique.ttf-ff74fd638565b1fb3e000ad516e0ac50.fontdata"]
+source_file="res://fonts/Inter.ttf"
+dest_files=["res://.godot/imported/Inter.ttf-71b212663852a96aaf75183f12ecf9e4.fontdata"]
 
 [params]
 
