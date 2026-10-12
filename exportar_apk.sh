@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Exporta el APK firmado de Android a build/android/LadrillosCombinatorios.apk.
+# Exporta el APK firmado de Android a build/android/LadrillosCombinatorios.apk
+# y arma build/LadrillosCombinatorios.zip (APK + LEEME.md) para entregar.
 #
-# Requisitos (ver README): Godot 4.7 con las plantillas de exportación,
+# Requisitos: Godot 4.7 con las plantillas de exportación,
 # Android SDK con build-tools en ~/Android/Sdk, Java, y la llave de firma en
 # ~/.local/share/ladrillos-combinatorios/ (release.keystore y release.keystore.txt).
 #
@@ -14,7 +15,9 @@ cd "$(dirname "$0")"
 
 if [[ ! -f "$LLAVES/release.keystore" || ! -f "$LLAVES/release.keystore.txt" ]]; then
 	echo "No encuentro la llave de firma en $LLAVES." >&2
-	echo "Créala con keytool (ver README, sección «Versión Android»)." >&2
+	echo "Créala con:" >&2
+	echo "  keytool -genkeypair -keystore $LLAVES/release.keystore -alias ladrillos -keyalg RSA -keysize 2048 -validity 10000" >&2
+	echo "y guarda en release.keystore.txt las líneas «alias=ladrillos» y «password=…»." >&2
 	exit 1
 fi
 
@@ -25,3 +28,27 @@ export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD="$(grep '^password=' "$LLAVES/rel
 mkdir -p build/android
 "$GODOT" --headless --path . --export-release "Android" build/android/LadrillosCombinatorios.apk
 ls -lh build/android/LadrillosCombinatorios.apk
+
+# Paquete de entrega: el APK con un LEEME.md que apunta al repositorio.
+ENTREGA="build/entrega"
+rm -rf "$ENTREGA" build/LadrillosCombinatorios.zip
+mkdir -p "$ENTREGA"
+cp build/android/LadrillosCombinatorios.apk "$ENTREGA/"
+cat > "$ENTREGA/LEEME.md" <<'FIN'
+# Ladrillos Combinatorios
+
+Juego de combinatoria (Unidad III) hecho en Godot.
+
+Repositorio con el código y la explicación:
+https://github.com/arstbltech/teoria-combinatoria
+
+## Instalar
+
+1. Pasar `LadrillosCombinatorios.apk` al celular.
+2. Abrirlo desde el administrador de archivos.
+3. Si Android lo pide, permitir instalar apps de fuentes desconocidas.
+
+Necesita Android 7 o superior con procesador de 64 bits.
+FIN
+(cd "$ENTREGA" && python3 -m zipfile -c ../LadrillosCombinatorios.zip LadrillosCombinatorios.apk LEEME.md)
+ls -lh build/LadrillosCombinatorios.zip
